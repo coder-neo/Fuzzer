@@ -9,7 +9,7 @@ function main() {
     var directory = "/home/vagrant/iTrust/src/main/";
     var filelist = listFilesRecursively(directory);
 
-    for (var i = 0; i < 3; i++){
+    for (var i = 0; i < 1; i++){
    
         try{
 
@@ -17,16 +17,20 @@ function main() {
            shell.cp('-R', '/home/vagrant/project/', '/home/vagrant/iTrust/');
 
            fuzzer.processFiles(filelist);
-           sleep.sleep(5);    
-    
+           //sleep.sleep(5);
+           console.log("Waiting for git commit");    
+           sleep.sleep(30); 
+
            //shell.exec('cd /home/vagrant/iTrust/; mvn clean package');
+           
            shell.exec('cd /home/vagrant/iTrust/');
+           shell.exec('git config user.email "nramcha@ncsu.edu"');
+           shell.exec('git config user.name "Nitin Ramchandani"')
            shell.exec('git add .');
            shell.exec('git commit -m "Fuzzed '+i+' "');
         
            var isProjectBuilding = true;
            while(isProjectBuilding){
-
     	      sleep.sleep(10);
               var jsonOutput = shell.exec('curl http://localhost:8080/job/iTrust/lastBuild/api/json');
               var buildObj = JSON.parse(jsonOutput);
