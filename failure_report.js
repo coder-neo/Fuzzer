@@ -45,12 +45,13 @@ function gatherFailedTestCases(dir) {
                 for (var testCase in result.testsuite.testcase) {
                     var t = {};
                     //console.log(result.testsuite.testcase[testCase]);
+		     t.classname = result.testsuite.testcase[testCase]['$'].classname;
                     t.testname = result.testsuite.testcase[testCase]['$'].name;
                     t.failed = false;;
                     if (result.testsuite.testcase[testCase].hasOwnProperty("failure")) {
                         t.failed = true;
                         console.log("FailedTestCases "+t.testname);
-                        fs.appendFile('/home/vagrant/Fuzzer2/failures.txt', t.testname+"\n", function (err) {});
+                        fs.appendFile('/home/vagrant/Fuzzer2/failures.txt', t.classname+' : '+t.testname+"\n", function (err) {});
 
                     }
 
