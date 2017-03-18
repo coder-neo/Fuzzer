@@ -30,7 +30,8 @@ function main() {
     	      sleep.sleep(10);
               var jsonOutput = shell.exec('curl http://localhost:8080/job/iTrust/lastBuild/api/json');
               var buildObj = JSON.parse(jsonOutput);
-	      isProjectBuilding = buildObj.building;
+	      console.log(JSON.stringify(jsonOutput));
+              isProjectBuilding = buildObj.building;
            
 	   }
 	}catch(e){
