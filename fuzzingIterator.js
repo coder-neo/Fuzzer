@@ -23,7 +23,7 @@ function main() {
 
            //shell.exec('cd /home/vagrant/iTrust/; mvn clean package');
            
-           shell.exec('cd /home/vagrant/iTrust/');
+           shell.exec('cd /home/vagrant/iTrust/src/main/');
            shell.exec('git config user.email "nramcha@ncsu.edu"');
            shell.exec('git config user.name "Nitin Ramchandani"')
            shell.exec('git add .');
