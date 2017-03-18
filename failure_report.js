@@ -6,14 +6,22 @@ var parser = new xml2js.Parser();
 
 
 exports.updateFailureReport = function(){
-    var reports = ["/home/vagrant/iTrust/target/surefire-reports/"];
-    gatherFailedTestCases(reports[0]);
+    var reports = ["/var/lib/jenkins/jobs/iTrust/workspace/target/surefire-reports/"];
+    gatherFailedTestCases(reports[0],false);
 }
 
-function gatherFailedTestCases(dir) {
+exports.getAllTestCases = function(){
+    var reports = ["/home/vagrant/project/target/surefire-reports/"];
+    gatherFailedTestCases(reports[0],true);
+    
+}
+
+
+function gatherFailedTestCases(dir,ignoreFailed) {
 
     var files = fs.readdirSync(dir);
     var filelist = [];
+
     files.forEach(function (file) {
 
         var filePath = path.join(dir, file);
@@ -33,25 +41,27 @@ function gatherFailedTestCases(dir) {
         else
             return a.time - b.time;
     }
-//   filelist = ["/home/vagrant/iTrust/target/surefire-reports/TEST-edu.ncsu.csc.itrust.unit.bean.DistanceComparatorTest.xml"]
    console.log("FilelIst"+filelist.length) 
    var failedTestCases = [];
     for (var file in filelist) {
-//	console.log("File"+filelist[file]);
         fs.readFile(filelist[file], function (err, data) {
             parser.parseString(data, function (err, result) {
-//                console.log(filelist[file])
-//                console.log(result);
                 for (var testCase in result.testsuite.testcase) {
-                    var t = {};
-                    //console.log(result.testsuite.testcase[testCase]);
-		     t.classname = result.testsuite.testcase[testCase]['$'].classname;
+                    
+		    var t = {};
+		    t.classname = result.testsuite.testcase[testCase]['$'].classname;
                     t.testname = result.testsuite.testcase[testCase]['$'].name;
                     t.failed = false;;
-                    if (result.testsuite.testcase[testCase].hasOwnProperty("failure")) {
-                        t.failed = true;
-                        console.log("FailedTestCases "+t.testname);
-                        fs.appendFile('/home/vagrant/Fuzzer2/failures.txt', t.classname+' : '+t.testname+"\n", function (err) {});
+                    
+                    if(ignoreFailed){
+			
+		          fs.appendFileSync('/home/vagrant/Fuzzer2/Fuzzer/allTestCases.txt', t.classname+"<->"+t.testname+"\n", 'utf8');
+
+		     }else if (result.testsuite.testcase[testCase].hasOwnProperty("failure")) {
+                    
+		           t.failed = true;
+                           //console.log("FailedTestCases "+t.testname);
+                           fs.appendFileSync('/home/vagrant/Fuzzer2/Fuzzer/failures.txt', t.classname+"<->"+t.testname+"\n", 'utf8');
 
                     }
 
